@@ -2,17 +2,17 @@ from Parse import *
 
 def main():
     #Operation permission status (1:command mode; 0:login mode)
-    status = 1
+    status = 0
     #account id
     current_account = []
+    #shopping cart
     shopping_cart = {}
     while 1:
         if status == 1:
-            #该部分已完成，只等数据库做好再进行调整
+            #after login
             commandmenu(current_account)
             selection = input()
             print()
-            #传递shopping_cart，current_account，接收shopping_cart
             #search item
             if selection == '1':
                 search()
@@ -104,7 +104,7 @@ def main():
                 input("Please press enter to continue")
 
         elif status == 0:
-            #该部分已完成，只等数据库做好再进行调整
+            #not login
             loginmenu()
             selection = input()
             print()
