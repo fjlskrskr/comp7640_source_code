@@ -3,7 +3,18 @@ import pymysql
 class Database():
     def __init__(self):
         #link mysql database
-        self.db = pymysql.connect(host='localhost',user='testuser',password='Aa123456',database='comp7640')
+        #please modify the setting parameters for your database
+        self.db = pymysql.connect(
+            #Host where the database server is located
+            host='localhost',
+            #Username to log in as
+            user='root',
+            #Password to use
+            password='test123',
+            #Database to use
+            database='comp7640'
+            )
+        
         self.database = self.db.cursor()
 
     def show(self,Table,Select,*Where):

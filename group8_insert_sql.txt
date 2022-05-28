@@ -1,0 +1,145 @@
+#create table
+CREATE TABLE shop (
+sid CHAR(10) NOT NULL,
+sname CHAR(100) NOT NULL,
+rating INT(1) NOT NULL,
+location CHAR(255) NOT NULL,
+CHECK ( rating >= 0 AND rating < 6 ),
+PRIMARY KEY (sid)
+);
+
+CREATE TABLE item (
+iid CHAR(10) NOT NULL UNIQUE,
+iname CHAR(255) NOT NULL,
+price INT(10) NOT NULL,
+feature1 CHAR(255),
+feature2 CHAR(255),
+feature3 CHAR(255),
+item_quantity INT(10) NOT NULL,
+sid CHAR(10) NOT NULL,
+CHECK ( price > 0 AND item_quantity >= 0 ),
+PRIMARY KEY (iid),
+FOREIGN KEY (sid) REFERENCES shop (sid) ON DELETE CASCADE
+);
+
+CREATE TABLE customer (
+cid CHAR(25) NOT NULL,
+tel CHAR(25) NOT NULL,
+address CHAR(255) NOT NULL,
+password CHAR(255) NOT NULL,
+PRIMARY KEY (cid)
+);
+
+CREATE TABLE orderinfo(
+oid CHAR(10) NOT NULL,
+cid CHAR(25) NOT NULL,
+date DATE NOT NULL,
+PRIMARY KEY (oid,cid)
+);
+
+CREATE TABLE detail(
+oid CHAR(10) NOT NULL,
+iid CHAR(10) NOT NULL,
+iname CHAR(255) NOT NULL,
+price INT(10) NOT NULL,
+order_quantity INT(10) NOT NULL,
+CHECK ( price > 0 AND order_quantity > 0 ),
+PRIMARY KEY (oid,iid),
+FOREIGN KEY (oid) REFERENCES orderinfo (oid) ON DELETE CASCADE
+);
+
+#insert data
+INSERT INTO shop ( sid, sname, rating, location )
+VALUES
+('s1', 'Book shop', 2, 'Kowloon Tong'),
+('s2', 'Shoes shop', 3, 'Mong Kok'),
+('s3', 'Electronic Product shop', 1, 'Tism She Tsui'),
+('s4', 'Fruit shop', 4, 'Yau Ma Tei');
+
+INSERT INTO item ( iid, iname, price, feature1, feature2, feature3, item_quantity, sid )
+VALUES
+('i1', 'natural science', 120, 'astronomy', 'biology', 'physics', 10, 's1'), 
+('i2', 'law', 130, 'economic law', 'commercial law', 'criminal law', 5, 's1'),
+('i3', 'philosophy', 100, 'logic', 'region', 'ethics', 2, 's1'),  
+('i4', 'leather shoes', 400, 'black', 'decorous', 'formal', 5, 's2'), 
+('i5', 'sports shoes', 300, 'soft', 'comfortable', 'colorful', 4, 's2'),
+('i6', 'high heel', 450, 'mature', 'steady', 'fashionable', 10, 's2'),  
+('i7', 'smart phone', 6000, 'small', 'light', 'powerful', 2, 's3'), 
+('i8', 'Wireless earphones', 2000, 'noise reduction', 'light', 'portable', 10, 's3'), 
+('i9', 'laptop', 8000, 'light', 'small volume', 'long battery life', 3, 's3'), 
+('i10', 'grapes', 50, 'purple', 'sweet', 'America', 10, 's4'), 
+('i11', 'lemon', 10, 'yellow', 'sour', 'Malaysia', 20, 's4'), 
+('i12', 'grapefruit', 30, 'yellow', 'bitter', 'China', 3, 's4');
+
+INSERT INTO customer ( cid, tel, address, password)
+VALUES
+('20210304', '90603060', 'Wong Tai Sin', '2021'),
+('20210327', '94562828', 'Lok Fu', '2140'),
+('20210202', '60509030', 'Kowloon Tong', '2109'),
+('20222222', '60539930', 'Prince Edward', '2209'),
+('20220412', '46931192', 'Mong Kok', '2206'),
+('20210420', '59363039', 'Yau Ma Tei', '1225'),
+('20220520', '52690606', 'Jordan', '0901'),
+('20201102', '90464987', 'Tsim Sha Tsui', '1001'), 
+('20200607', '96065679', 'Kwn Tong', '0807'),
+('20200102', '53795850', 'Central', '0705'),
+('20210907', '56604235', 'Wan Chai', '0104'),
+('20220606', '90551037', 'Causeway Bay', '0502');
+
+INSERT INTO orderinfo ( oid, cid, date)
+VALUES
+('o1', '20210304', '2021-04-02'),
+('o2', '20210327', '2020-11-03'),
+('o3', '20210202', '2020-12-25'),
+('o4', '20222222', '2021-04-09'),
+('o5', '20220412', '2021-08-27'),
+('o6', '20210420', '2021-09-07'),
+('o7', '20200520', '2021-12-25'),
+('o8', '20201102', '2021-12-14'),
+('o9', '20200607', '2021-12-17'),
+('o10', '20200102', '2022-02-01'),
+('o11', '20210907', '2022-02-03'),
+('o12', '20220606', '2021-04-05'),
+('o13', '20210304', '2021-04-05'),
+('o14', '20220412', '2022-08-27');
+
+INSERT INTO detail ( oid, iid, iname, price, order_quantity)
+VALUES
+('o1', 'i1', 'natural science', 120, 1),
+('o2', 'i2', 'law', 130, 1),
+('o3', 'i3', 'philosophy', 100, 1),
+('o4', 'i4', 'leather shoes', 800, 2),
+('o5', 'i5', 'sports shoes', 300, 1),
+('o6', 'i6', 'high heel', 450, 1),
+('o7', 'i7', 'smart phone', 6000, 1),
+('o8', 'i8', 'Wireless earphones', 2000, 1),
+('o9', 'i9', 'laptop', 8000, 1),
+('o10', 'i10', 'grapes', 50, 1),
+('o11', 'i11', 'lemon', 10, 1),
+('o12', 'i12', 'grapefruit', 30, 1),
+('o13', 'i2', 'law', 130, 1),
+('o14', 'i9', 'laptop', 8000, 1),
+('o14', 'i8', 'Wireless earphones', 2000, 1);
+
+#create trigger
+CREATE TRIGGER Canceling
+AFTER DELETE ON detail 
+FOR EACH ROW 
+UPDATE item 
+SET item_quantity = item_quantity + old.order_quantity
+WHERE iid = old.iid;
+
+CREATE TRIGGER Purchase
+AFTER INSERT ON detail
+FOR EACH ROW
+UPDATE item
+SET item_quantity = item_quantity - new.order_quantity
+WHERE iid = new.iid;
+
+
+
+
+
+
+
+

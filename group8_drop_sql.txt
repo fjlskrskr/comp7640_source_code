@@ -1,0 +1,30 @@
+#drop trigger
+DROP TRIGGER Canceling;
+DROP TRIGGER Purchase;
+
+#drop constraint
+ALTER TABLE detail
+ DROP PRIMARY KEY,
+ DROP FOREIGN KEY detail_ibfk_1,
+ DROP CHECK detail_chk_1;
+
+ALTER TABLE item
+ DROP PRIMARY KEY,
+ DROP FOREIGN KEY item_ibfk_1;
+
+ALTER TABLE shop
+ DROP PRIMARY KEY,
+ DROP CHECK shop_chk_1;
+
+ALTER TABLE customer
+ DROP PRIMARY KEY;
+
+ALTER TABLE orderinfo
+ DROP PRIMARY KEY;
+
+#drop table 
+DROP TABLE shop;
+DROP TABLE item;
+DROP TABLE customer;
+DROP TABLE orderinfo;
+DROP TABLE detail;
